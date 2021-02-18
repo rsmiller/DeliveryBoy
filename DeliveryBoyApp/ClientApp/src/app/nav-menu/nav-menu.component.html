@@ -2,8 +2,7 @@
   <nav
     class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light box-shadow mb-3">
     <div class="container">
-      <div style="color: white; text-align: center; width: 100%;"><h2 style="display: inline-block; margin-right: 5px">₩eƵoom€</h2><h4 style="display: inline-block">Tip Tracker</h4></div>
-      <!--<a class="navbar-brand" [routerLink]="['/']">WeZoome</a>
+      <div style="color: white; text-align: left; width: 85%;"><h2 style="display: inline-block; margin-right: 5px">₩eƵoom€</h2><h4 style="display: inline-block">Tip Tracker</h4></div>
   <button
     class="navbar-toggler"
     type="button"
@@ -12,33 +11,23 @@
     aria-label="Toggle navigation"
     [attr.aria-expanded]="isExpanded"
     (click)="toggle()"
+   style="background-color: white"
   >
     <span class="navbar-toggler-icon"></span>
   </button>
   <div
     class="navbar-collapse collapse d-sm-inline-flex justify-content-end"
-    [ngClass]="{ show: isExpanded }"
+    [ngClass]="{ show: isExpanded }" style="text-align: center"
   >
     <ul class="navbar-nav flex-grow">
-      <li
-        class="nav-item"
-        [routerLinkActive]="['link-active']"
-        [routerLinkActiveOptions]="{ exact: true }"
-      >
-        <a class="nav-link text-dark" [routerLink]="['/']">Home</a>
+      <li class="nav-item" [routerLinkActive]="['link-active']" [routerLinkActiveOptions]="{ exact: true }">
+        <a class="nav-link text-light" [routerLink]="['/']">Add Tips</a>
       </li>
       <li class="nav-item" [routerLinkActive]="['link-active']">
-        <a class="nav-link text-dark" [routerLink]="['/counter']">
-        Get
-        </a>
-      </li>
-      <li class="nav-item" [routerLinkActive]="['link-active']">
-        <a class="nav-link text-dark" [routerLink]="['/fetch-data']">
-        Add
-        </a>
+        <a class="nav-link text-light" [routerLink]="['/get']">Get Tips</a>
       </li>
     </ul>
-  </div>-->
+  </div>
     </div>
   </nav>
 </header>

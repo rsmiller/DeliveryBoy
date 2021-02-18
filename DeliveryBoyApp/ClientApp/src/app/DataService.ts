@@ -67,7 +67,9 @@ export class DataService {
 
     this._HttpClient.post<TipModel>(this._BaseUrl + 'Tip', postData).subscribe(result => {
 
-      console.trace(result);
+      //console.trace(result);
+      location.reload();
+
     }, error => {
       console.error(error);
     });
@@ -98,21 +100,39 @@ export class DataService {
   public getUserLocation() {
 
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position: Position) => {
-        //this.Lat = position.coords.latitude;
-        //this.Long = position.coords.longitude;
 
-        this.Lat = parseFloat(position.coords.latitude.toFixed(3));
-        this.Long = parseFloat(position.coords.longitude.toFixed(3));
-
-        if (this._TimerStarted == false) {
-          this._TimerStarted = true;
-          this.getLocationLoop();
+      navigator.geolocation.watchPosition((position: Position) => {
+        if (this.Lat != parseFloat(position.coords.latitude.toFixed(3)) || this.Long != parseFloat(position.coords.longitude.toFixed(3))) {
+          this.Moving = true;
+        }
+        else {
+          this.Moving = false;
         }
 
+        //this.Lat = position.coords.latitude;
+        //this.Long = position.coords.longitude;
+        this.Lat = parseFloat(position.coords.latitude.toFixed(3));
+        this.Long = parseFloat(position.coords.longitude.toFixed(3));
       }, function () {
-          alert("Geo location must me turned on to use this site");
-      }, { timeout: 10000 })
+        // Do nothing
+
+      }, { timeout: 10000 });
+
+      //navigator.geolocation.getCurrentPosition((position: Position) => {
+      //  //this.Lat = position.coords.latitude;
+      //  //this.Long = position.coords.longitude;
+
+      //  this.Lat = parseFloat(position.coords.latitude.toFixed(3));
+      //  this.Long = parseFloat(position.coords.longitude.toFixed(3));
+
+      //  if (this._TimerStarted == false) {
+      //    this._TimerStarted = true;
+      //    this.getLocationLoop();
+      //  }
+
+      //}, function () {
+      //    alert("Geo location must me turned on to use this site");
+      //}, { timeout: 10000 })
     }
     else {
 
@@ -135,7 +155,7 @@ export class DataService {
     }, function () {
       // Do nothing
 
-    }, { timeout: 10000 })
+    }, { timeout: 10000 });
   }
 }
 
