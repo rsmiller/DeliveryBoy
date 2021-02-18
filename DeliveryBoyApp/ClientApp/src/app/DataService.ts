@@ -25,18 +25,18 @@ export class DataService {
 
   public postTipData(t: string) {
     // adding some privacy. Using third decimal place = 365 foot area
-    let new_lat = parseFloat(this.Lat.toFixed(4));
-    let new_long = parseFloat(this.Long.toFixed(4));
+    let new_lat = parseFloat(this.Lat.toFixed(3));
+    let new_long = parseFloat(this.Long.toFixed(3));
 
     let new_lat_decimals = new_lat.toString().split(".")[1].length; 
     let new_long_decimals = new_long.toString().split(".")[1].length; 
 
     if (new_lat_decimals >= 4) {
-      new_lat = parseFloat(new_lat.toString().substring(0, new_lat.toString().indexOf('.') + 4));
+      new_lat = parseFloat(new_lat.toString().substring(0, new_lat.toString().indexOf('.') + 3));
     }
 
     if (new_long_decimals >= 4) {
-      new_long = parseFloat(new_long.toString().substring(0, new_long.toString().indexOf('.') + 4));
+      new_long = parseFloat(new_long.toString().substring(0, new_long.toString().indexOf('.') + 3));
     }
 
     //console.log(this.Lat);
@@ -77,41 +77,65 @@ export class DataService {
 
     this._HttpClient.get("https://api.ipify.org/?format=json").subscribe((res: any) => {
       this.CurrentIPAddress = res.ip;
+      if (this.CurrentIPAddress == null) {
+        this.getUnsecuredIPAddress();
+      }
+
+    }, error => {
+        this.getUnsecuredIPAddress();
+    });
+  }
+
+  public getUnsecuredIPAddress() {
+
+    this._HttpClient.get("http://api.ipify.org/?format=json").subscribe((res: any) => {
+      this.CurrentIPAddress = res.ip;
+    }, error => {
+      console.error(error);
     });
   }
 
   public getUserLocation() {
-    navigator.geolocation.getCurrentPosition((position: Position) => {
-      this.Lat = position.coords.latitude;
-      this.Long = position.coords.longitude;
 
-      if (this._TimerStarted == false) {
-        this._TimerStarted = true;
-        this.getLocationLoop();
-      }
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position: Position) => {
+        //this.Lat = position.coords.latitude;
+        //this.Long = position.coords.longitude;
 
-    }, function () {
-      alert('We need access to your geo location to use the app')
-    }, { timeout: 10000 })
+        this.Lat = parseFloat(position.coords.latitude.toFixed(3));
+        this.Long = parseFloat(position.coords.longitude.toFixed(3));
+
+        if (this._TimerStarted == false) {
+          this._TimerStarted = true;
+          this.getLocationLoop();
+        }
+
+      }, function () {
+          alert("Geo location must me turned on to use this site");
+      }, { timeout: 10000 })
+    }
+    else {
+
+    }
   }
 
   private getLocationLoop() {
-    setInterval(function () {
-      navigator.geolocation.getCurrentPosition((position: Position) => {
-        if (this.Lat != position.coords.latitude && this.Long != position.coords.longitude) {
-          this.Moving = true;
-        }
-        else {
-          this.Moving = false;
-        }
+    navigator.geolocation.watchPosition((position: Position) => {
+      if (this.Lat != parseFloat(position.coords.latitude.toFixed(3)) || this.Long != parseFloat(position.coords.longitude.toFixed(3))) {
+        this.Moving = true;
+      }
+      else {
+        this.Moving = false;
+      }
 
-        this.Lat = position.coords.latitude;
-        this.Long = position.coords.longitude;
-      }, function () {
-          // Do nothing
-          
-      }, { timeout: 10000 })
-    }, 20000);
+      //this.Lat = position.coords.latitude;
+      //this.Long = position.coords.longitude;
+      this.Lat = parseFloat(position.coords.latitude.toFixed(3));
+      this.Long = parseFloat(position.coords.longitude.toFixed(3));
+    }, function () {
+      // Do nothing
+
+    }, { timeout: 10000 })
   }
 }
 

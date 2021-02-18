@@ -14,3 +14,12 @@ code {
   background-color: #1b6ec2;
   border-color: #1861ac;
 }
+
+body {
+  color: white;
+  background-color: #293241;
+}
+
+header {
+  background-color: #293241;
+}

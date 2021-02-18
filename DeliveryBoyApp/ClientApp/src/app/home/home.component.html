@@ -1,11 +1,11 @@
 <div class="row">
   <div class="col-12" style="text-align: center;">
-    <h2 [hidden]="_DataService.Lat != 0">Getting your location...</h2>
-    <h2 [hidden]="_DataService.Lat == 0">Got your location!</h2>
-    <h2 [hidden]="_DataService.Moving == false">We moving....</h2>
+    <h3 class="infoText" [hidden]="_DataService.Lat != 0">Getting your location...</h3>
+    <h3 class="infoText" [hidden]="_DataService.Lat == 0 || _DataService.Moving == true">What kind of tip did you receive?</h3>
+    <h3 class="infoText" [hidden]="_DataService.Moving == false">We're moving....</h3>
   </div>
 </div>
-<div class="row" [hidden]="_DataService.Lat == 0">
+<div class="row" [hidden]="_DataService.Lat == 0 || _DataService.Moving == true">
   <div class="col-3">
     <span class="fa-stack mobile-btn" (click)="postTipData('no')">
       <i class="fas fa-times-circle"></i>
@@ -37,19 +37,34 @@
 </div>
 <div class="row">
   <div class="col-12" style="text-align: left; margin-top: 45px;">
-    <hr/>
+    <hr />
     <p><b>Instructions:</b> Make sure you browser supports obtaining your GPS location. After you complete your delivery press the button that corrisponds to your tip rating.</p>
     <p><b>Disclaimer:</b> Locations are approximate within a 365 sq foot area. Precise GPS location data is not saved.</p>
+    <p>Current IP: {{ _DataService.CurrentIPAddress }}</p>
+    <p>Lat: {{ _DataService.Lat }}</p>
+    <p>Long: {{ _DataService.Long }}</p>
   </div>
 </div>
 
-  <style>
-    h2 {
-      margin-bottom: 45px;
-      margin-top: 15px;
-    }
+<style>
+  h2 {
+    margin-bottom: 45px;
+    margin-top: 15px;
+  }
 
-    .mobile-btn {
+  .mobile-btn {
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 10px;
+    width: 75px;
+    height: 55px;
+    text-align: center;
+    font-size: large;
+    color: #ee6c4d;
+    background-color: white;
+  }
+
+    .mobile-btn:active, .mobile-btn:hover {
       border: 1px solid gray;
       border-radius: 5px;
       padding: 10px;
@@ -57,34 +72,36 @@
       height: 55px;
       text-align: center;
       font-size: large;
-      color: green;
+      color: white;
+      background-color: #ee6c4d;
     }
 
-      .mobile-btn:active, .mobile-btn:hover {
-        border: 1px solid gray;
-        border-radius: 5px;
-        padding: 10px;
-        width: 75px;
-        height: 55px;
-        text-align: center;
-        font-size: large;
-        color: white;
-        background-color: green;
-      }
+  .fa-dollar-sign {
+  }
 
-    .fa-dollar-sign {
-    }
+  .style-2 {
+    margin-left: 15px;
+  }
 
-    .style-2 {
-      margin-left: 15px;
-    }
+  .style-3 {
+    margin-left: 30px;
+  }
 
-    .style-3 {
-      margin-left: 30px;
-    }
+  .savedMsg {
+    color: gray;
+    margin-top: 30px;
+  }
 
-    .savedMsg {
-      color: gray;
-      margin-top: 30px;
-    }
-  </style>
+  .infoText {
+    margin-bottom: 30px;
+    font-size: 1.3em;
+    color: #ee6c4d;
+  }
+
+  hr{
+    background-color: white;
+  }
+  b {
+    color: #ee6c4d;
+  }
+</style>
