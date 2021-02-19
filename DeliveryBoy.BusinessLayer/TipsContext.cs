@@ -12,6 +12,7 @@ namespace DeliveryBoy.BusinessLayer
     public interface ITipsContext
     {
         DbSet<Tip> Tips { get; set; }
+        DbSet<TipDetail> TipDetails { get; set; }
         DbSet<UserTip> UserTips { get; set; }
         int SaveChanges();
     }
@@ -43,12 +44,14 @@ namespace DeliveryBoy.BusinessLayer
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new TipsConfiguration());
+            modelBuilder.ApplyConfiguration(new TipDetailConfiguration());
             modelBuilder.ApplyConfiguration(new UserTipsConfiguration());
 
             base.OnModelCreating(modelBuilder);
         }
 
         public DbSet<Tip> Tips { get; set; }
+        public DbSet<TipDetail> TipDetails { get; set; }
         public DbSet<UserTip> UserTips { get; set; }
     }
 }

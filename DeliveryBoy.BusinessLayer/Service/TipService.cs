@@ -19,6 +19,8 @@ namespace DeliveryBoy.BusinessLayer.Service
 
     public class TipService : ITipService
     {
+        private const double _ScanRadius = 0.003;
+
         private ITipsContext _Context;
 
         public TipService(ITipsContext context)
@@ -31,13 +33,29 @@ namespace DeliveryBoy.BusinessLayer.Service
             if (model.GeoLat == 0 || model.GeoLong == 0 || String.IsNullOrEmpty(model.Ip))
                 return new Response<bool>(false);
 
+            // Entering in detail
+            var utcNow = DateTime.UtcNow;
+
+            var tipDetail = new TipDetail()
+            {
+                GeoLat = model.GeoLat,
+                GeoLong = model.GeoLong,
+                NoTip = model.NoTip,
+                LowTip = model.LowTip,
+                GoodTip = model.Good,
+                GreatTip = model.GreatTip,
+                CreatedOn = utcNow
+            };
+
+            _Context.TipDetails.Add(tipDetail);
+            _Context.SaveChanges();
+
+
             // See if they already entered one within a few feet in the last two days
             var mostRecentTip = _Context.Tips.Where(m => m.GeoLat == model.GeoLat && m.GeoLong == model.GeoLong).FirstOrDefault();
 
             if (mostRecentTip == null)
             {
-                var utcNow = DateTime.UtcNow;
-
                 var userTip = new UserTip()
                 {
                     Ip = model.Ip,
@@ -71,8 +89,6 @@ namespace DeliveryBoy.BusinessLayer.Service
 
             if(mostRecent == null)
             {
-                var utcNow = DateTime.UtcNow;
-
                 var userTip = new UserTip()
                 {
                     Ip = model.Ip,
@@ -98,7 +114,6 @@ namespace DeliveryBoy.BusinessLayer.Service
             }
             else
             {
-                var utcNow = DateTime.UtcNow;
                 mostRecent.UpdatedOn = utcNow;
 
                 mostRecentTip = CalculateTip(mostRecentTip, model);
@@ -113,27 +128,29 @@ namespace DeliveryBoy.BusinessLayer.Service
 
         public Response<TipDto> GetTip(double geoLat, double geoLong)
         {
-            double meters = 100; // Going to round to nearest 50 meters
+            double max_lat = geoLat + _ScanRadius;
+            double max_long = geoLong + _ScanRadius;
 
-            // number of km per degree = ~111km (111.32 in google maps, but range varies
-            //between 110.567km at the equator and 111.699km at the poles)
-            // 1km in degree = 1 / 111.32km = 0.0089
-            // 1m in degree = 0.0089 / 1000 = 0.0000089
-            double coef = meters * 0.0000089;
+            double min_lat = geoLat - _ScanRadius;
+            double min_long = geoLong - _ScanRadius;
 
-            double max_lat = geoLat + coef;
-            double max_long = geoLong + coef / Math.Cos(geoLat * 0.018);
-
-            double min_lat = geoLat - coef;
-            double min_long = geoLong - coef / Math.Cos(geoLat * 0.018);
-
-            var allTips = _Context.Tips.Where(m => m.GeoLat <= max_lat && m.GeoLong <= min_lat && m.GeoLat >= min_lat && m.GeoLong >= min_lat).ToList();
+            var allTips = _Context.Tips.Where(m => 
+                    m.GeoLat <= max_lat && 
+                    m.GeoLong <= min_lat && 
+                    m.GeoLat >= min_lat && 
+                    m.GeoLong >= min_lat).ToList();
 
             var tipDto = new TipDto();
-            tipDto.NoTipPercentage = allTips.Sum(x => x.NoTip);
-            tipDto.LowTipPercentage = allTips.Sum(x => x.LowTip);
-            tipDto.GoodTipPercentage = allTips.Sum(x => x.GoodTip);
-            tipDto.GreatTipPercentage = allTips.Sum(x => x.GreatTip);
+            var noTip = allTips.Sum(x => x.NoTip);
+            var lowTip = allTips.Sum(x => x.LowTip);
+            var goodTip = allTips.Sum(x => x.GoodTip);
+            var greatTip = allTips.Sum(x => x.GreatTip);
+            var total = noTip + lowTip + goodTip + greatTip;
+
+            tipDto.NoTipPercentage = noTip / total;
+            tipDto.LowTipPercentage = lowTip / total;
+            tipDto.GoodTipPercentage = goodTip / total;
+            tipDto.GreatTipPercentage = greatTip / total;
 
             return new Response<TipDto>(tipDto);
         }
