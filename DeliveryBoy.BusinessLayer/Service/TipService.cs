@@ -1,6 +1,7 @@
 ﻿using DeliveryBoy.BusinessLayer.Models;
 using DeliveryBoy.BusinessLayer.Models.Dto;
 using DeliveryBoy.Models;
+using Geocoding;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,8 +13,7 @@ namespace DeliveryBoy.BusinessLayer.Service
     public interface ITipService
     {
         Response<bool> EnterTip(EnterTipModel model);
-        Response<TipDto> GetTip(GetTipModel model);
-
+        Task<Response<TipDto>> GetTip(GetTipModel model);
         Response<TipDto> GetTip(double geoLat, double geoLong);
     }
 
@@ -42,7 +42,7 @@ namespace DeliveryBoy.BusinessLayer.Service
                 GeoLong = model.GeoLong,
                 NoTip = model.NoTip,
                 LowTip = model.LowTip,
-                GoodTip = model.Good,
+                GoodTip = model.GoodTip,
                 GreatTip = model.GreatTip,
                 CreatedOn = utcNow
             };
@@ -136,29 +136,43 @@ namespace DeliveryBoy.BusinessLayer.Service
 
             var allTips = _Context.Tips.Where(m => 
                     m.GeoLat <= max_lat && 
-                    m.GeoLong <= min_lat && 
+                    m.GeoLong <= max_long && 
                     m.GeoLat >= min_lat && 
-                    m.GeoLong >= min_lat).ToList();
+                    m.GeoLong >= min_long).ToList();
 
             var tipDto = new TipDto();
-            var noTip = allTips.Sum(x => x.NoTip);
-            var lowTip = allTips.Sum(x => x.LowTip);
-            var goodTip = allTips.Sum(x => x.GoodTip);
-            var greatTip = allTips.Sum(x => x.GreatTip);
-            var total = noTip + lowTip + goodTip + greatTip;
+            var noTip = (decimal)allTips.Sum(x => x.NoTip);
+            var lowTip = (decimal)allTips.Sum(x => x.LowTip);
+            var goodTip = (decimal)allTips.Sum(x => x.GoodTip);
+            var greatTip = (decimal)allTips.Sum(x => x.GreatTip);
+            var total = (decimal)(noTip + lowTip + goodTip + greatTip);
 
-            tipDto.NoTipPercentage = noTip / total;
-            tipDto.LowTipPercentage = lowTip / total;
-            tipDto.GoodTipPercentage = goodTip / total;
-            tipDto.GreatTipPercentage = greatTip / total;
+
+            if (total > 0)
+            {
+                tipDto.NoTipPercentage = (noTip / total) * 100;
+                tipDto.LowTipPercentage = (lowTip / total) * 100;
+                tipDto.GoodTipPercentage = (goodTip / total) * 100;
+                tipDto.GreatTipPercentage = (greatTip / total) * 100;
+            }
 
             return new Response<TipDto>(tipDto);
         }
 
-        public Response<TipDto> GetTip(GetTipModel model)
+        public async Task<Response<TipDto>> GetTip(GetTipModel model)
         {
+            var coder = new MapQuestGeocoder("aKtPJLhX9YdGWLDoJVAcMw3kQiGvPGmN");
+            var address = await coder.GeocodeAsync(model.streetNumber + " " + model.streetName + " " + model.zipcode);
+            var addressData = address.FirstOrDefault();
 
-            return null;
+            if(addressData == null)
+            {
+                return new Response<TipDto>("No data found");
+            }
+            else
+            {
+                return GetTip(addressData.Coordinates.Latitude, addressData.Coordinates.Longitude);
+            }
         }
 
         private Tip CalculateTip(Tip tip, EnterTipModel model)

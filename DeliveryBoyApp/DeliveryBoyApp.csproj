@@ -20,6 +20,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="5.0.2" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />
     <PackageReference Include="MySql.Data.EntityFrameworkCore" Version="8.0.22" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,6 +32,7 @@
 
   <ItemGroup>
     <None Remove="ClientApp\src\app\DataService.ts" />
+    <None Remove="ClientApp\src\app\get\get-component.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,6 +41,7 @@
 
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\src\app\DataService.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\get\get-component.ts" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

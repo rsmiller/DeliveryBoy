@@ -22,9 +22,9 @@ namespace DeliveryBoyApp.Controllers
         }
 
         [HttpGet]
-        public TipDto Get(GetTipModel model)
+        public async Task<TipDto> Get([FromQuery]GetTipModel model)
         {
-            var response = _Service.GetTip(model);
+            var response = await _Service.GetTip(model);
 
             return response.Data;
         }

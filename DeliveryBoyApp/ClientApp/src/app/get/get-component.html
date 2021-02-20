@@ -1,0 +1,87 @@
+<div class="row">
+  <div class="col-12">
+    <div>Street Number</div>
+    <input type="number" [(ngModel)]="streetNumber" class="form-control"/>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <div>Street Name</div>
+    <input type="text" [(ngModel)]="streetName" class="form-control" />
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <div>Zipcode</div>
+    <input type="number" [(ngModel)]="zipcode" class="form-control" />
+  </div>
+</div>
+
+<div class="row" style="margin-top: 20px; text-align: center;">
+  <div class="col-12">
+    <input type="button" class="btn btn-primary" value="Get Tip Data" (click)="getTips()" />
+  </div>
+</div>
+
+<div class="row" style="margin-top: 30px; text-align: center;" [hidden]="!gettingTipData">
+  <div class="col-12">
+    <div class="fa-3x">
+      <i class="fas fa-cog fa-spin" style="color: #ee6c4d"></i>
+    </div>
+  </div>
+</div>
+
+<div class="row" style="margin-top: 30px;" [hidden]="firstRun">
+  <div class="col-3">
+    <div class="tipPercentageBlock">
+      <span class="fa-stack">
+        <i class="fas fa-times-circle"></i>
+      </span>
+      <div>{{ tipData.noTipPercentage }}%</div>
+    </div>
+  </div>
+  <div class="col-3">
+    <div class="tipPercentageBlock">
+      <span class="fa-stack">
+        <i class="fas fa-dollar-sign"></i>
+      </span>
+      <div>{{ tipData.lowTipPercentage }}%</div>
+    </div>
+  </div>
+  <div class="col-3">
+    <div class="tipPercentageBlock">
+      <span class="fa-stack">
+        <i class="fas fa-dollar-sign"></i>
+        <i class="fas fa-dollar-sign stack-2"></i>
+      </span>
+      <div>{{ tipData.goodTipPercentage }}%</div>
+    </div>
+  </div>
+  <div class="col-3">
+    <div class="tipPercentageBlock">
+      <span class="fa-stack">
+        <i class="fas fa-dollar-sign"></i>
+        <i class="fas fa-dollar-sign stack-2"></i>
+        <i class="fas fa-dollar-sign stack-3"></i>
+      </span>
+      <div>{{ tipData.greatTipPercentage }}%</div>
+    </div>
+  </div>
+</div>
+
+
+<style>
+  .tipPercentageBlock {
+    font-size: 22px !important;
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 10px;
+    width: 85px;
+    height: 95px;
+    text-align: center;
+    color: #ee6c4d;
+    background-color: white;
+  }
+</style>

@@ -10,7 +10,12 @@ export class DataService {
   public Lat: number = 0;
   public Long: number = 0;
   public Moving: boolean = false;
+  public MovingCountRequired: number = 2;
+  public MovingCount: number = 0;
+
   private _TimerStarted: boolean = false;
+
+  public TipDataReceived = new BehaviorSubject<TipDto>(undefined);
 
   constructor(http: HttpClient, @Inject('BASE_URL_API') baseUrl: string) {
     this._HttpClient = http;
@@ -66,9 +71,20 @@ export class DataService {
     }
 
     this._HttpClient.post<TipModel>(this._BaseUrl + 'Tip', postData).subscribe(result => {
-
       //console.trace(result);
       location.reload();
+
+    }, error => {
+      console.error(error);
+    });
+  }
+
+  public getTipData(streetNumber: number, streetName: string, zipcode: number) {
+
+    this._HttpClient.get<TipDto>(this._BaseUrl + 'Tip?streetName=' + streetName + '&streetNumber=' + streetNumber + '&zipcode=' + zipcode).subscribe(result => {
+      console.trace(result);
+
+      this.TipDataReceived.next(result);
 
     }, error => {
       console.error(error);
@@ -104,9 +120,16 @@ export class DataService {
       navigator.geolocation.watchPosition((position: Position) => {
         if (this.Lat != parseFloat(position.coords.latitude.toFixed(3)) || this.Long != parseFloat(position.coords.longitude.toFixed(3))) {
           this.Moving = true;
+          this.MovingCount = 1;
         }
         else {
-          this.Moving = false;
+          // Check if still moving by recording counts
+          if (this.MovingCount >= this.MovingCountRequired) {
+            this.Moving = false;
+          }
+          else {
+            this.MovingCount++;
+          }
         }
 
         //this.Lat = position.coords.latitude;
@@ -172,4 +195,17 @@ export class TipModel {
   LowTip: boolean = false;
   GoodTip: boolean = false;
   GreatTip: boolean = false;
+}
+
+export class GetTipModel {
+  streetNumber: number;
+  streetName: string;
+  zipcode: number;
+}
+
+export class TipDto {
+  noTipPercentage: number = 0;
+  lowTipPercentage: number = 0;
+  goodTipPercentage: number = 0;
+  greatTipPercentage: number = 0;
 }
