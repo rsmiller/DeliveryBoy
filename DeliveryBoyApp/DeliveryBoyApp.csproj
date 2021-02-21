@@ -31,6 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\src\app\add\add-component.ts" />
     <None Remove="ClientApp\src\app\DataService.ts" />
     <None Remove="ClientApp\src\app\get\get-component.ts" />
   </ItemGroup>
@@ -40,6 +41,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\src\app\add\add-component.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\DataService.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\get\get-component.ts" />
   </ItemGroup>

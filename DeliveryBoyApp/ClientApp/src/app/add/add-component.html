@@ -1,0 +1,56 @@
+<div class="row" [hidden]="IsMobile() == true">
+  <div class="col-12" style="text-align: center;">
+    <h3 style="color: #ee6c4d;">This website only works on mobile.</h3>
+    <h5>Visit this website with your mobile device. Don't forget to add it to your home screen!</h5>
+  </div>
+</div>
+
+<div class="row" [hidden]="IsMobile() == false">
+  <div class="col-12" style="text-align: center;">
+    <h3 class="infoText" [hidden]="_DataService.Lat != 0">Getting your location...</h3>
+    <h3 class="infoText" [hidden]="_DataService.Lat == 0 || _DataService.Moving == true">What kind of tip did you receive?</h3>
+    <h3 class="infoText" [hidden]="_DataService.Moving == false">We're moving....</h3>
+    <h3 class="infoText" [show]="InputWaitNotify == true">You can't do that right now</h3>
+  </div>
+</div>
+<div class="row" [hidden]="_DataService.Lat == 0 || _DataService.Moving == true || IsMobile() == false">
+  <div class="col-3">
+    <span class="fa-stack mobile-btn" (click)="postTipData('no')">
+      <i class="fas fa-times-circle"></i>
+    </span>
+  </div>
+  <div class="col-3">
+    <span class="fa-stack mobile-btn" (click)="postTipData('low')">
+      <i class="fas fa-dollar-sign"></i>
+    </span>
+  </div>
+  <div class="col-3">
+    <span class="fa-stack mobile-btn" (click)="postTipData('good')">
+      <i class="fas fa-dollar-sign"></i>
+      <i class="fas fa-dollar-sign stack-2"></i>
+    </span>
+  </div>
+  <div class="col-3">
+    <span class="fa-stack mobile-btn" (click)="postTipData('great')">
+      <i class="fas fa-dollar-sign"></i>
+      <i class="fas fa-dollar-sign stack-2"></i>
+      <i class="fas fa-dollar-sign stack-3"></i>
+    </span>
+  </div>
+</div>
+<div class="row">
+  <div class="col-12" style="text-align: center;">
+    <h3 class="savedMsg" [hidden]="!Saved">Saved!</h3>
+  </div>
+</div>
+<div class="row" [hidden]="IsMobile() == false">
+  <div class="col-12" style="text-align: left; margin-top: 45px;">
+    <hr />
+    <p><b>Instructions:</b> Make sure you browser supports obtaining your GPS location. After you complete your delivery press the button that corrisponds to your tip rating.</p>
+    <p><b>Disclaimer:</b> Locations are approximate within a 365 sq foot area. Precise GPS location data is not saved.</p>
+    <p>Current IP: {{ _DataService.CurrentIPAddress }}</p>
+    <p>Lat: {{ _DataService.Lat }}</p>
+    <p>Long: {{ _DataService.Long }}</p>
+    <p>Mobile: {{ IsMobile() }}</p>
+  </div>
+</div>

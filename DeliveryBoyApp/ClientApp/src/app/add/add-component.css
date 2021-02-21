@@ -1,0 +1,58 @@
+h2 {
+  margin-bottom: 45px;
+  margin-top: 15px;
+}
+
+.mobile-btn {
+  border: 1px solid gray;
+  border-radius: 5px;
+  padding: 10px;
+  width: 75px;
+  height: 55px;
+  text-align: center;
+  font-size: large;
+  color: #ee6c4d;
+  background-color: white;
+}
+
+  .mobile-btn:active, .mobile-btn:hover {
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 10px;
+    width: 75px;
+    height: 55px;
+    text-align: center;
+    font-size: large;
+    color: white;
+    background-color: #ee6c4d;
+  }
+
+.fa-dollar-sign {
+}
+
+.style-2 {
+  margin-left: 15px;
+}
+
+.style-3 {
+  margin-left: 30px;
+}
+
+.savedMsg {
+  color: gray;
+  margin-top: 30px;
+}
+
+.infoText {
+  margin-bottom: 30px;
+  font-size: 1.3em;
+  color: #ee6c4d;
+}
+
+hr {
+  background-color: white;
+}
+
+b {
+  color: #ee6c4d;
+}

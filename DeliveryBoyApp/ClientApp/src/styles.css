@@ -23,3 +23,9 @@ body {
 header {
   background-color: #293241;
 }
+
+footer {
+  background-color: #293241;
+  padding-top: 50px;
+  text-align: center;
+}

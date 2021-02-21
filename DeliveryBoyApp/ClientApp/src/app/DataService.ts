@@ -6,14 +6,19 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 export class DataService {
   private _HttpClient: HttpClient;
   private _BaseUrl: string;
+
   public CurrentIPAddress: string;
+
   public Lat: number = 0;
   public Long: number = 0;
-  public Moving: boolean = false;
-  public MovingCountRequired: number = 2;
-  public MovingCount: number = 0;
 
-  private _TimerStarted: boolean = false;
+  public Moving: boolean = false;
+  private MovingTimer;
+
+  private _InputWaitTime: number = 600000; // 10 minutes
+  private InputTimer;
+  private InputPaused: boolean = false;
+  public InputWaitNotify: boolean = false;
 
   public TipDataReceived = new BehaviorSubject<TipDto>(undefined);
 
@@ -29,6 +34,18 @@ export class DataService {
   }
 
   public postTipData(t: string) {
+
+    if (this.InputPaused == true) {
+      this.InputWaitNotify = true;
+
+      setTimeout(function () {
+        this.InputWaitNotify = false;
+      }, 15000);
+
+      return;
+    }
+
+
     // adding some privacy. Using third decimal place = 365 foot area
     let new_lat = parseFloat(this.Lat.toFixed(3));
     let new_long = parseFloat(this.Long.toFixed(3));
@@ -72,8 +89,15 @@ export class DataService {
 
     this._HttpClient.post<TipModel>(this._BaseUrl + 'Tip', postData).subscribe(result => {
       //console.trace(result);
-      location.reload();
 
+      if (this.InputTimer != null) {
+        clearTimeout(this.InputTimer);
+      }
+
+      this.InputTimer = setTimeout(function () {
+        this.InputPaused = false;
+      }, this._InputWaitTime);
+      location.reload();
     }, error => {
       console.error(error);
     });
@@ -82,7 +106,7 @@ export class DataService {
   public getTipData(streetNumber: number, streetName: string, zipcode: number) {
 
     this._HttpClient.get<TipDto>(this._BaseUrl + 'Tip?streetName=' + streetName + '&streetNumber=' + streetNumber + '&zipcode=' + zipcode).subscribe(result => {
-      console.trace(result);
+      //console.trace(result);
 
       this.TipDataReceived.next(result);
 
@@ -120,65 +144,25 @@ export class DataService {
       navigator.geolocation.watchPosition((position: Position) => {
         if (this.Lat != parseFloat(position.coords.latitude.toFixed(3)) || this.Long != parseFloat(position.coords.longitude.toFixed(3))) {
           this.Moving = true;
-          this.MovingCount = 1;
-        }
-        else {
-          // Check if still moving by recording counts
-          if (this.MovingCount >= this.MovingCountRequired) {
+
+          if (this.MovingTimer != null) {
+            clearTimeout(this.MovingTimer);
+          }
+
+          this.MovingTimer = setTimeout(function () {
             this.Moving = false;
-          }
-          else {
-            this.MovingCount++;
-          }
+          }, 30000);
         }
 
-        //this.Lat = position.coords.latitude;
-        //this.Long = position.coords.longitude;
         this.Lat = parseFloat(position.coords.latitude.toFixed(3));
         this.Long = parseFloat(position.coords.longitude.toFixed(3));
       }, function () {
         // Do nothing
-
       }, { timeout: 10000 });
-
-      //navigator.geolocation.getCurrentPosition((position: Position) => {
-      //  //this.Lat = position.coords.latitude;
-      //  //this.Long = position.coords.longitude;
-
-      //  this.Lat = parseFloat(position.coords.latitude.toFixed(3));
-      //  this.Long = parseFloat(position.coords.longitude.toFixed(3));
-
-      //  if (this._TimerStarted == false) {
-      //    this._TimerStarted = true;
-      //    this.getLocationLoop();
-      //  }
-
-      //}, function () {
-      //    alert("Geo location must me turned on to use this site");
-      //}, { timeout: 10000 })
     }
     else {
 
     }
-  }
-
-  private getLocationLoop() {
-    navigator.geolocation.watchPosition((position: Position) => {
-      if (this.Lat != parseFloat(position.coords.latitude.toFixed(3)) || this.Long != parseFloat(position.coords.longitude.toFixed(3))) {
-        this.Moving = true;
-      }
-      else {
-        this.Moving = false;
-      }
-
-      //this.Lat = position.coords.latitude;
-      //this.Long = position.coords.longitude;
-      this.Lat = parseFloat(position.coords.latitude.toFixed(3));
-      this.Long = parseFloat(position.coords.longitude.toFixed(3));
-    }, function () {
-      // Do nothing
-
-    }, { timeout: 10000 });
   }
 }
 

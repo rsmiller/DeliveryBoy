@@ -7,6 +7,7 @@ import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { GetComponent } from './get/get-component';
+import { AddComponent } from './add/add-component';
 import { HomeComponent } from './home/home.component';
 import { DataService } from './DataService';
 import { ServiceWorkerModule } from '@angular/service-worker';
@@ -17,6 +18,7 @@ import { environment } from '../environments/environment';
     AppComponent,
     NavMenuComponent,
     GetComponent,
+    AddComponent,
     HomeComponent
   ],
   imports: [
@@ -25,6 +27,7 @@ import { environment } from '../environments/environment';
     FormsModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
+      { path: 'add', component: AddComponent, pathMatch: 'full' },
       { path: 'get', component: GetComponent, pathMatch: 'full' },
     ]),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })

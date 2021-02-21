@@ -29,8 +29,11 @@ export class GetComponent {
   }
 
   public getTips() {
-    this.gettingTipData = true;
-    this._DataService.getTipData(this.streetNumber, this.streetName, this.zipcode);
+    if (this.streetNumber != null && this.streetName != null && this.zipcode != null) {
+      this.gettingTipData = true;
+      this._DataService.getTipData(this.streetNumber, this.streetName, this.zipcode);
+    }
+    
   }
 
   private GotTipData(data: TipDto) {
