@@ -142,7 +142,12 @@ export class DataService {
     if (navigator.geolocation) {
 
       navigator.geolocation.watchPosition((position: Position) => {
-        if (this.Lat != parseFloat(position.coords.latitude.toFixed(3)) || this.Long != parseFloat(position.coords.longitude.toFixed(3))) {
+        if (
+          (this.Lat != parseFloat(position.coords.latitude.toFixed(3)) ||
+            this.Long != parseFloat(position.coords.longitude.toFixed(3))
+          ) &&
+          !(this.Lat == 0 && this.Long == 0)
+          ) {
           this.Moving = true;
 
           if (this.MovingTimer != null) {

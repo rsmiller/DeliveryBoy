@@ -10,7 +10,7 @@
     <h3 class="infoText" [hidden]="_DataService.Lat != 0">Getting your location...</h3>
     <h3 class="infoText" [hidden]="_DataService.Lat == 0 || _DataService.Moving == true">What kind of tip did you receive?</h3>
     <h3 class="infoText" [hidden]="_DataService.Moving == false">We're moving....</h3>
-    <h3 class="infoText" [show]="InputWaitNotify == true">You can't do that right now</h3>
+    <h3 class="infoText" [hidden]="_DataService.InputWaitNotify == false">You can't do that right now</h3>
   </div>
 </div>
 <div class="row" [hidden]="_DataService.Lat == 0 || _DataService.Moving == true || IsMobile() == false">
@@ -48,9 +48,10 @@
     <hr />
     <p><b>Instructions:</b> Make sure you browser supports obtaining your GPS location. After you complete your delivery press the button that corrisponds to your tip rating.</p>
     <p><b>Disclaimer:</b> Locations are approximate within a 365 sq foot area. Precise GPS location data is not saved.</p>
-    <p>Current IP: {{ _DataService.CurrentIPAddress }}</p>
-    <p>Lat: {{ _DataService.Lat }}</p>
-    <p>Long: {{ _DataService.Long }}</p>
-    <p>Mobile: {{ IsMobile() }}</p>
+    <!--
+  <p>Current IP: {{ _DataService.CurrentIPAddress }}</p>
+  <p>Lat: {{ _DataService.Lat }}</p>
+  <p>Long: {{ _DataService.Long }}</p>
+  <p>Mobile: {{ IsMobile() }}</p>-->
   </div>
 </div>

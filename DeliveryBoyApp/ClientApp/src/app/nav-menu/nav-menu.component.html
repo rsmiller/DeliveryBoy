@@ -1,6 +1,6 @@
 <header>
   <nav
-    class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light box-shadow mb-3" [hidden]="IsMobile() == true">
+    class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light box-shadow mb-3">
     <div class="container">
       <div style="color: white; text-align: left; width: 80%;"><h2 style="display: inline-block; margin-right: 5px">₩eƵoom€</h2><h4 style="display: inline-block">Tip Tracker</h4></div>
   <button
@@ -17,7 +17,7 @@
   </button>
   <div
     class="navbar-collapse collapse d-sm-inline-flex justify-content-end"
-    [ngClass]="{ show: isExpanded }" style="text-align: center"
+    [ngClass]="{ show: isExpanded }" style="text-align: center" [hidden]="IsMobile() == false"
   >
     <ul class="navbar-nav flex-grow">
       <li class="nav-item" [routerLinkActive]="['link-active']" [routerLinkActiveOptions]="{ exact: true }">

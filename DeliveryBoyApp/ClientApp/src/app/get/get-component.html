@@ -71,6 +71,17 @@
   </div>
 </div>
 
+<div class="row" [hidden]="IsMobile() == false">
+  <div class="col-12" style="text-align: left; margin-top: 45px;">
+    <hr />
+    <p><b>Disclaimer:</b> Specific tip data is not served. Returned results are an approximate of a 1/2 mile radius around the input address. Results may very.</p>
+    <!--
+    <p>Current IP: {{ _DataService.CurrentIPAddress }}</p>
+    <p>Lat: {{ _DataService.Lat }}</p>
+    <p>Long: {{ _DataService.Long }}</p>
+    <p>Mobile: {{ IsMobile() }}</p>-->
+  </div>
+</div>
 
 <style>
   .tipPercentageBlock {
